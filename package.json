@@ -47,6 +47,7 @@
     "@temporalio/interceptors-opentelemetry": "workspace:*",
     "@temporalio/nexus": "workspace:*",
     "@temporalio/nyc-test-coverage": "workspace:*",
+    "@temporalio/openai-agents": "workspace:*",
     "@temporalio/plugin": "workspace:*",
     "@temporalio/proto": "workspace:*",
     "@temporalio/test": "workspace:*",

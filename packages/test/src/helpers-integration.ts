@@ -51,6 +51,33 @@ const defaultDynamicConfigOptions = [
   'worker.removableBuildIdDurationSinceDefault=1',
 ];
 
+/**
+ * Get the executable configuration for the ephemeral server.
+ * Uses TEMPORAL_CLI_PATH environment variable or /usr/local/bin/temporal if available.
+ */
+function getExecutableConfig(): { type: 'existing-path'; path: string } | { type: 'cached-download' } {
+  // Check for explicit CLI path
+  const cliPath = process.env.TEMPORAL_CLI_PATH;
+  if (cliPath) {
+    return { type: 'existing-path', path: cliPath };
+  }
+
+  // Check common locations
+  const fs = require('fs');
+  const commonPaths = ['/usr/local/bin/temporal', '/usr/bin/temporal'];
+  for (const path of commonPaths) {
+    try {
+      fs.accessSync(path, fs.constants.X_OK);
+      return { type: 'existing-path', path };
+    } catch {
+      // Path not available, continue
+    }
+  }
+
+  // Fall back to cached download
+  return { type: 'cached-download' };
+}
+
 function setupRuntime(recordedLogs?: { [workflowId: string]: LogEntry[] }, runtimeOpts?: Partial<RuntimeOptions>) {
   const logger = recordedLogs
     ? new DefaultLogger('DEBUG', (entry) => {
@@ -106,6 +133,7 @@ export async function createLocalTestEnvironment(
   return await TestWorkflowEnvironment.createLocal({
     ...(opts || {}), // Use provided options or default to an empty object
     server: {
+      executable: getExecutableConfig(),
       searchAttributes: Object.values(defaultSAKeys),
       ...(opts?.server || {}), // Use provided server options or default to an empty object
       extraArgs: [

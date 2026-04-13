@@ -11,6 +11,7 @@ packages:
   - packages/meta
   - packages/nexus
   - packages/nyc-test-coverage
+  - packages/openai-agents
   - packages/plugin
   - packages/proto
   - packages/test
@@ -18,6 +19,14 @@ packages:
   - packages/worker
   - packages/workflow
   - scripts
+  # OpenAI Agents samples
+  - ../temporal-samples-typescript/openai-agents
+  # OpenAI Agents JS packages (for development)
+  - ../openai-agents-js/packages/agents
+  - ../openai-agents-js/packages/agents-core
+  - ../openai-agents-js/packages/agents-openai
+  - ../openai-agents-js/packages/agents-realtime
+  - ../openai-agents-js/packages/agents-extensions
 
 ignoreScripts: true
 
@@ -39,3 +48,7 @@ peerDependencyRules:
 overrides:
   # Can be removed once a release of `express` with an updated qs is cut
   'qs': '^6.14.1'
+  # Force workspace versions for OpenAI packages
+  '@openai/agents': 'workspace:*'
+  '@openai/agents-core': 'workspace:*'
+  '@openai/agents-openai': 'workspace:*'
